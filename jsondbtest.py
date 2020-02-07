@@ -1,18 +1,25 @@
 from flask import Flask, request
 # To load as a list of JSON
 import pandas as pd
-data = pd.read_json("C:\\Users\\Pankaj Malviya\\Desktop\\Flask Webpage Development\\netaporter_gb_similar.json", lines=True, orient='columns')
-count = 0
+
+
+
+#setting up our data base
+url = 'https://greendeck-datasets-2.s3.amazonaws.com/netaporter_gb_similar.json'
+data = pd.read_json(url, lines=True, orient='columns')
 db = pd.DataFrame(data)
+#creating lists to store values after first query fired
 lidisc = []
 libr= []
 lidisc2 = []
 libr2= []
+count=0
+
+
 app = Flask(__name__)
 
 
-
-def brandlist(operand2):
+def brandlist(operand2): #to get the list of index where brand name == operand
          index = 0
          li = []
          for i in db['brand']:
@@ -32,7 +39,7 @@ def query_get():
          query_type = req_data['query_type']
          li = []
         
-         for i in db['_id']:
+         for i in db['_id']: #getting the all the NAP id`s into a list for future use
                 li.append(i['$oid'])
          index = 0
          liid = []
@@ -45,7 +52,7 @@ def query_get():
              if(operand1=="discount"):
                  global lidisc
                  lidisc = [] 
-                 for i in db['price']:
+                 for i in db['price']: 
                         n = (i['regular_price']['value']-i['offer_price']['value'])/100
                         if(operator==">" and n>operand2):
                                 lidisc.append(index)
